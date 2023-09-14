@@ -19,6 +19,13 @@
                     >
                 </div>
             </div>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <router-link to="/auth" class="nav-link active"
+                        >Auth</router-link
+                    >
+                </div>
+            </div>
         </div>
     </nav>
     <router-view />

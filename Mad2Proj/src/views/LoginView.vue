@@ -2,7 +2,19 @@
     <div class="login">
         <h1>Auth page</h1>
         <div v-if="isLogin === 'false'">
-            <p>Waiting for flask auth</p>
+            <form>
+                <label for="username">Username: </label>
+                <input type="text" id="username" v-model="input.username" />
+                <label for="password">Password: </label>
+                <input type="password" id="password" v-model="input.password" />
+                <button
+                    id="submitButton"
+                    type="submit"
+                    v-on:click.prevent="login()">
+                    Login
+                </button>
+            </form>
+            <p id="error"></p>
         </div>
         <div v-else>
             <p>Access token: {{ accessToken }}</p>
@@ -22,6 +34,10 @@
             return {
                 isLogin: "",
                 accessToken: "",
+                input: {
+                    username: "",
+                    password: "",
+                },
             };
         },
         setup() {
@@ -35,34 +51,62 @@
                 router.push("/");
             }
             onMounted(async () => {
-                console.log("wtf")
-                axios.get("http://localhost:5000/auth").then((response) => {
-                    console.log(response.data);
-                    sessionStorage.setItem("isLogin", "true");
-                    sessionStorage.setItem(
-                        "accessToken",
-                        response.data["access_token"]
-                    );
-                    isLogin.value = sessionStorage.getItem("isLogin");
-                    accessToken.value = sessionStorage.getItem("accessToken");
-                    for (let i = 0; i < 6; i++) {
-                        setTimeout(() => {
-                            document.getElementById("redirP").innerHTML =
-                                "Redirecting you to home in " +
-                                (5 - i) +
-                                " seconds";
-                            if (i == 5) {
-                                console.log("how bitch");
-                                sessionStorage.setItem("justReload", "true");
-                                window.location.reload();
-                            }
-                        }, i * 1000);
-                    }
-                });
+                console.log("wtf");
             });
             return { isLogin, accessToken };
         },
         components: {},
-        methods: {},
+        methods: {
+            login() {
+                const username = this.input.username;
+                const password = this.input.password;
+                console.log("username: " + username);
+                console.log("password: " + password);
+                const sessionStorage = window.sessionStorage;
+                const params = {
+                    username: username,
+                    password: password,
+                };
+                axios
+                    .post("http://localhost:5000/login", params)
+                    .then((responce) => {
+                        const res = responce.data;
+                        console.log(res);
+                        if (res["error"]) {
+                            console.log("error");
+                            document.getElementById("error").innerHTML =
+                                res["error"];
+                        } else {
+                            const sessionStorage = window.sessionStorage;
+                            sessionStorage.setItem("isLogin", "true");
+                            sessionStorage.setItem(
+                                "accessToken",
+                                res["access_token"]
+                            );
+                            this.isLogin = sessionStorage.getItem("isLogin");
+                            this.accessToken =
+                                sessionStorage.getItem("accessToken");
+                            for (let i = 0; i < 6; i++) {
+                                setTimeout(() => {
+                                    document.getElementById(
+                                        "redirP"
+                                    ).innerHTML =
+                                        "Redirecting you to home in " +
+                                        (5 - i) +
+                                        " seconds";
+                                    if (i == 5) {
+                                        console.log("how bitch");
+                                        sessionStorage.setItem(
+                                            "justReload",
+                                            "true"
+                                        );
+                                        window.location.reload();
+                                    }
+                                }, i * 1000);
+                            }
+                        }
+                    });
+            },
+        },
     };
 </script>

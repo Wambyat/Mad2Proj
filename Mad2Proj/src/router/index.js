@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ModelView from "../views/ModelView.vue";
-import AuthView from "../views/AuthView.vue";
-
+import LoginView from "../views/LoginView.vue";
+import LogoutView from "../views/LogoutView.vue";
 const routes = [
     {
         path: "/",
@@ -15,9 +15,14 @@ const routes = [
         component: ModelView,
     },
     {
-        path: "/auth",
-        name: "auth",
-        component: AuthView,
+        path: "/login",
+        name: "login",
+        component: LoginView,
+    },
+    {
+        path: "/logout",
+        name: "logout",
+        component: LogoutView,
     },
 ];
 

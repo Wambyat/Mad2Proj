@@ -21,8 +21,8 @@ def home():
 @app.route("/auth", methods=["GET"])
 def auth():
     global access_token
-    access_token = create_access_token(identity="test")
     time.sleep(2)
+    access_token = create_access_token(identity="test")
     return jsonify({"access_token": access_token,"message": "You are authed now try visiting /testok and /testnotok"})
 
 @app.route("/testok", methods=["GET"])
@@ -40,6 +40,12 @@ def testnotok():
     if curr == "test":
         return jsonify({"message": "You are not authorized"})
 
+# Reset access token
+@app.route("/logout", methods=["GET"])
+def reset():
+    global access_token
+    access_token = ""
+    return jsonify({"message": "Access token has been reset"})
 
 @app.route("/model/", methods=["POST", "GET"])
 def model():

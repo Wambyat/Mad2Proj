@@ -19,11 +19,22 @@
                     >
                 </div>
             </div>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <router-link to="/auth" class="nav-link active"
-                        >Auth</router-link
-                    >
+            <div v-if="isLogin === 'false'">
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <router-link to="/login" class="nav-link active"
+                            >Auth</router-link
+                        >
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <router-link to="/logout" class="nav-link active"
+                            >Logout</router-link
+                        >
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,3 +59,26 @@
         background-color: #ffffff;
     }
 </style>
+
+<script>
+    import { ref, onMounted, watch, reactive } from "vue";
+    export default {
+        data() {
+            return {
+                isLogin: "false",
+            };
+        },
+        setup() {
+            const isLogin = ref("false");
+            const sessionStorage = window.sessionStorage;
+            onMounted(async () => {
+                console.log("mounted");
+                isLogin.value = sessionStorage.getItem("isLogin");
+            });
+            isLogin.value = sessionStorage.getItem("isLogin");
+            return { isLogin };
+        },
+        components: {},
+        methods: {},
+    };
+</script>

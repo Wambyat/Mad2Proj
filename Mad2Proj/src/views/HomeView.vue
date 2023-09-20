@@ -5,16 +5,14 @@
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
-import { ref, onMounted } from "vue";
-    import { useRouter } from "vue-router";
+    import axios from "axios";
+    import { ref, onMounted } from "vue";
     export default {
         data() {
-            return {
-            };
+            return {};
         },
         setup() {
             const isLogin = ref("");
@@ -26,10 +24,24 @@ import { ref, onMounted } from "vue";
                 window.location.reload();
             }
             onMounted(() => {
-                console.log("wtf")
-                document.getElementById("access_token").innerHTML = "access_token: "+sessionStorage.getItem("accessToken");
+                console.log("Home mounted");
+                document.getElementById("access_token").innerHTML =
+                    "access_token: " + sessionStorage.getItem("accessToken");
+                if (sessionStorage.getItem("accessToken") !== "") {
+                    const yourConfig = {
+                        headers: {
+                            Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+                        },
+                    };
+                    axios
+                        .get("http://localhost:5000/test/", yourConfig)
+                        .catch((error) => {
+                            console.log(error);
+                        }).then((response) => {
+                            console.log(response);
+                        });
+                }
             });
-            
-        }
+        },
     };
 </script>

@@ -51,7 +51,7 @@
                 router.push("/");
             }
             onMounted(async () => {
-                console.log("wtf");
+                console.log("Login mounted");
             });
             return { isLogin, accessToken };
         },
@@ -60,9 +60,6 @@
             login() {
                 const username = this.input.username;
                 const password = this.input.password;
-                console.log("username: " + username);
-                console.log("password: " + password);
-                const sessionStorage = window.sessionStorage;
                 const params = {
                     username: username,
                     password: password,
@@ -73,7 +70,6 @@
                         const res = responce.data;
                         console.log(res);
                         if (res["error"]) {
-                            console.log("error");
                             document.getElementById("error").innerHTML =
                                 res["error"];
                         } else {
@@ -83,6 +79,10 @@
                                 "accessToken",
                                 res["access_token"]
                             );
+                            if (res["admin"])
+                            {
+                                sessionStorage.setItem("admin", "true");
+                            }
                             this.isLogin = sessionStorage.getItem("isLogin");
                             this.accessToken =
                                 sessionStorage.getItem("accessToken");
@@ -95,7 +95,6 @@
                                         (5 - i) +
                                         " seconds";
                                     if (i == 5) {
-                                        console.log("how bitch");
                                         sessionStorage.setItem(
                                             "justReload",
                                             "true"

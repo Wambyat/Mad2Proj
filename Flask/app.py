@@ -49,7 +49,33 @@ def test():
         }
     )
 
+@app.route("/venue/", methods = ["GET"])
+def venue():
+    res = SQL("SELECT * FROM venue")
+    return jsonify({"data": res})
 
+@app.route("/show/", methods = ["GET"])
+def show():
+    res = SQL("SELECT * FROM show")
+    return jsonify({"data": res})
+
+@app.route("/show/<id>", methods = ["GET"])
+def show_id(id):
+    res = SQL("SELECT * FROM show WHERE id = " + id)
+    return jsonify({"data": res})
+
+@app.route("/venue/<id>", methods = ["GET"])
+def venue_id(id):
+    res = SQL("SELECT * FROM venue WHERE id = " + id)
+    return jsonify({"data": res})
+
+@app.route("/show/edit/<id>", methods = ["POST"])
+def show_edit(id):
+    name = request.json.get("name")
+    date = request.json.get("date")
+    venue = request.json.get("venue")
+    res = SQL("UPDATE show SET name = '" + name + "', date = '" + date + "', venue = '" + venue + "' WHERE id = " + id)
+    return jsonify({"data": res})
 @app.route("/login", methods=["POST"])
 def login():
     global access_token

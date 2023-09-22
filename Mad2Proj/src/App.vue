@@ -61,6 +61,7 @@
 </style>
 
 <script>
+    import "@/assets/style.css";
     import { ref, onMounted } from "vue";
     export default {
         data() {

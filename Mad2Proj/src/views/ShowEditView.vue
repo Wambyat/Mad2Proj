@@ -5,6 +5,7 @@
         <p>Venue ID: <input :value="dets[3]" /></p>
         <p>Seats: <input :value="dets[4]" /></p>
         <p>Details: <input :value="dets[6]" /></p>
+    </div>
 </template>
 <script>
     import { ref } from "vue";
@@ -34,7 +35,4 @@
     };
 </script>
 <style scoped>
-    span {
-        border: solid 1px black;
-    }
 </style>

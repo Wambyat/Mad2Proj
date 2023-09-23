@@ -1,6 +1,9 @@
 <template>
     <div>
         <h1>This is shows</h1>
+        <div v-if="isAdmin === 'true'">
+            <router-link to="/show/new">Add new show</router-link>
+        </div>
         <div v-for="show in shows" :key="show.id">
             <h3 @click="goShow(show[0])" class="title">{{ show[1] }}</h3>
             <p>{{ show[6] }}</p>
@@ -16,11 +19,15 @@
         data() {
             return {
                 shows: [],
+                isAdmin: false,
             };
         },
         setup() {
             const shows = ref([]);
+            const isAdmin = ref("false");
             const router = useRouter();
+            const sessionStorage = window.sessionStorage;
+            isAdmin.value = sessionStorage.getItem("admin");
             axios.get("http://localhost:5000/show").then((responce) => {
                 const res = responce.data;
                 shows.value = res["data"];
@@ -29,7 +36,7 @@
                 
                 router.push("/show/" + query);
             }
-            return { shows, goShow };
+            return { shows, goShow, isAdmin };
         },
     };
 </script>

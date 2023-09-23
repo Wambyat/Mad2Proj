@@ -82,6 +82,7 @@
                             if (res["admin"])
                             {
                                 sessionStorage.setItem("admin", "true");
+                                console.log("admin");
                             }
                             this.isLogin = sessionStorage.getItem("isLogin");
                             this.accessToken =

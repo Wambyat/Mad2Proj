@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
-from celerySQL import cSQL
+from celerySQL import cSQL, email
 from flask_jwt_extended import (
     create_access_token,
     JWTManager,

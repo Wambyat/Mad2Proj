@@ -61,7 +61,8 @@
 </style>
 
 <script>
-    import { ref, onMounted, watch, reactive } from "vue";
+    import "@/assets/style.css";
+    import { ref, onMounted } from "vue";
     export default {
         data() {
             return {
@@ -72,7 +73,7 @@
             const isLogin = ref("false");
             const sessionStorage = window.sessionStorage;
             onMounted(async () => {
-                console.log("mounted");
+                console.log("Main app mounted");
                 isLogin.value = sessionStorage.getItem("isLogin");
             });
             isLogin.value = sessionStorage.getItem("isLogin");

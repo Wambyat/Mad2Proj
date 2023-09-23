@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
+from celerySQL import cSQL
 from flask_jwt_extended import (
     create_access_token,
     JWTManager,
@@ -22,14 +23,12 @@ access_token = ""
 
 
 def SQL(query):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute(query)
-    # get output
-    output = c.fetchall()
-    conn.commit()
-    conn.close()
-    return output
+    output = cSQL.delay(query)
+    while True:
+        if output.status == "SUCCESS":
+            return output.get()
+        else:
+            time.sleep(0.5)
 
 
 # This is just a testing route. Use this to run sanity tests and whatever else.
@@ -38,17 +37,152 @@ def home():
     return jsonify({"message": "This is a test message. From Flask."})
 
 
-@app.route("/auth", methods=["GET"])
-def auth():
+@app.route("/test/", methods=["GET", "POST"])
+@jwt_required()
+def test():
     global access_token
-    time.sleep(2)
-    access_token = create_access_token(identity="test")
     return jsonify(
         {
             "access_token": access_token,
-            "message": "You are authed now try visiting /testok and /testnotok",
+            "message": "You have sent it correctly!",
         }
     )
+
+
+@app.route("/show/", methods=["GET"])
+def show():
+    res = SQL("SELECT * FROM show")
+    return jsonify({"data": res})
+
+
+@app.route("/show/<id>", methods=["GET"])
+def show_id(id):
+    res = SQL("SELECT * FROM show WHERE id = " + id)
+    return jsonify({"data": res})
+
+
+@app.route("/show/edit/<id>", methods=["POST"])
+def show_edit(id):
+    res = request.json
+    name = res["name"]
+    date = res["date"]
+    venue = res["venue_id"]
+    seats = res["seats"]
+    details = res["details"]
+    sql_query = (
+        "UPDATE show SET name = '"
+        + name
+        + "', show_date = '"
+        + date
+        + "', venue_id = '"
+        + venue
+        + "', seats = '"
+        + seats
+        + "', details = '"
+        + details
+        + "' WHERE id = "
+        + id
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/show/add", methods=["POST"])
+def show_add():
+    res = request.json
+    name = res["name"]
+    date = res["date"]
+    venue = res["venue_id"]
+    seats = res["seats"]
+    details = res["details"]
+    id = SQL("SELECT MAX(id) FROM show")[0][0] + 1
+    id = str(id)
+    sql_query = (
+        "INSERT INTO show (id, name, show_date, venue_id, seats, seats_booked, details) VALUES ("
+        + id
+        + ", '"
+        + name
+        + "', '"
+        + date
+        + "', '"
+        + venue
+        + "', '"
+        + seats
+        + "', "
+        + "0, '"
+        + details
+        + "')"
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/show/delete/<id>", methods=["GET"])
+def show_delete(id):
+    sql_query = "DELETE FROM show WHERE id = " + id
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/venue/", methods=["GET"])
+def venue():
+    res = SQL("SELECT * FROM venue")
+    return jsonify({"data": res})
+
+
+@app.route("/venue/<id>", methods=["GET"])
+def venue_id(id):
+    res = SQL("SELECT * FROM venue WHERE id = " + id)
+    return jsonify({"data": res})
+
+
+@app.route("/venue/add", methods=["POST"])
+def venue_add():
+    res = request.json
+    name = res["name"]
+    address = res["address"]
+    style = res["style"]
+
+    sql_query = (
+        "INSERT INTO venue (id, name, address, style) VALUES ("
+        + id
+        + ", '"
+        + name
+        + "', '"
+        + address
+        + "', '"
+        + style
+        + "')"
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/venue/edit/<id>", methods=["POST"])
+def venue_edit(id):
+    res = request.json
+    name = res["name"]
+    address = res["address"]
+    style = res["style"]
+    sql_query = (
+        "UPDATE venue SET name = '"
+        + name
+        + "', address = '"
+        + address
+        + "', style = '"
+        + style
+        + "' WHERE id = "
+        + id
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/venue/delete/<id>", methods=["GET"])
+def venue_delete(id):
+    sql_query = "DELETE FROM venue WHERE id = " + id
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
 
 
 @app.route("/login", methods=["POST"])
@@ -56,12 +190,21 @@ def login():
     global access_token
     username = request.json.get("username")
     password = request.json.get("password")
-    res = SQL("SELECT username, password FROM users")
+    res = SQL("SELECT * FROM users")
     print(res)
     for i in res:
-        if i[0] == username and i[1] == password:
-            access_token = create_access_token(identity=username)
+        if i[1] == username and i[2] == password:
+            access_token = create_access_token(identity=i[0])
             print("holy authed baby")
+            res = SQL("SELECT id FROM admin")
+            if i[0] in res[0]:
+                return jsonify(
+                    {
+                        "access_token": access_token,
+                        "message": "You are logged in now",
+                        "admin": True,
+                    }
+                )
             return jsonify(
                 {"access_token": access_token, "message": "You are logged in now"}
             )

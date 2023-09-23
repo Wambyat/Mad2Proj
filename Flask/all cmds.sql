@@ -46,3 +46,5 @@
 --     id int NOT NULL PRIMARY KEY,
 --     name TEXT
 -- )
+
+UPDATE show SET seats_booked = 0 WHERE id = 6

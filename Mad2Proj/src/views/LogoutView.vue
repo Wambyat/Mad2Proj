@@ -35,8 +35,8 @@
                 const sessionStorage = window.sessionStorage;
                 sessionStorage.setItem("isLogin", "false");
                 sessionStorage.setItem("accessToken", "");
+                sessionStorage.setItem("admin", "false");
                 axios.get("http://localhost:5000/logout");
-                // redirect to home page and force reload
                 sessionStorage.setItem("justReload", "true");
                 window.location.reload();
             },

@@ -5,7 +5,7 @@
         </h1>
         <p>{{ dets[2] }}</p>
         <p>{{ dets[3] }}</p>
-        <p @click="goShowEdit(dets[0])" class = "clickable">Click me to edit</p>
+        <p @click="goShowEdit(dets[0])" class = "clickable">Click me to edit or delete</p>
     </div>
 </template>
 <script>

@@ -4,16 +4,20 @@
         <p>Address: <input :value="dets[2]" id="address"/></p>
         <p>Style: <input :value="dets[3]" id="style"/></p>
         <button @click="updateVenue">Save</button>
+        <button @click="delConfirm = !delConfirm">Delete</button>
+        <button v-if="delConfirm" @click="deleteVenue">I'm sure I want to delete</button>
     </div>
 </template>
 <script>
     import { ref } from "vue";
     import axios from "axios";
+    import { useRouter } from "vue-router";
     export default {
         data() {
             return {
                 dets: [],
                 reactiveWidth: "fit-content",
+                delConfirm : false,
             };
         },
         props: {
@@ -22,6 +26,8 @@
         setup(props) {
             const query = ref(props.query);
             const dets = ref([]);
+            const delConfirm = ref(false);
+            const router = useRouter();
             axios
                 .get("http://localhost:5000/venue/" + query.value)
                 .then((responce) => {
@@ -45,7 +51,15 @@
                             console.log(res);
                         });
             }
-            return { dets, updateVenue };
+            function deleteVenue() {
+                axios
+                    .get("http://localhost:5000/venue/delete/"+ query.value).then((responce) => {
+                        const res = responce.data;
+                        console.log(res);
+                        router.push("/");
+                    });
+            }
+            return { dets, updateVenue, deleteVenue, delConfirm };
         },
     };
 </script>

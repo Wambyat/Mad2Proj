@@ -49,12 +49,6 @@ def test():
     )
 
 
-@app.route("/venue/", methods=["GET"])
-def venue():
-    res = SQL("SELECT * FROM venue")
-    return jsonify({"data": res})
-
-
 @app.route("/show/", methods=["GET"])
 def show():
     res = SQL("SELECT * FROM show")
@@ -64,12 +58,6 @@ def show():
 @app.route("/show/<id>", methods=["GET"])
 def show_id(id):
     res = SQL("SELECT * FROM show WHERE id = " + id)
-    return jsonify({"data": res})
-
-
-@app.route("/venue/<id>", methods=["GET"])
-def venue_id(id):
-    res = SQL("SELECT * FROM venue WHERE id = " + id)
     return jsonify({"data": res})
 
 
@@ -99,6 +87,77 @@ def show_edit(id):
     return jsonify({"data": "res"})
 
 
+@app.route("/show/add", methods=["POST"])
+def show_add():
+    res = request.json
+    name = res["name"]
+    date = res["date"]
+    venue = res["venue_id"]
+    seats = res["seats"]
+    details = res["details"]
+    id = SQL("SELECT MAX(id) FROM show")[0][0] + 1
+    id = str(id)
+    sql_query = (
+        "INSERT INTO show (id, name, show_date, venue_id, seats, seats_booked, details) VALUES ("
+        + id
+        + ", '"
+        + name
+        + "', '"
+        + date
+        + "', '"
+        + venue
+        + "', '"
+        + seats
+        + "', "
+        + "0, '"
+        + details
+        + "')"
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/show/delete/<id>", methods=["GET"])
+def show_delete(id):
+    sql_query = "DELETE FROM show WHERE id = " + id
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
+@app.route("/venue/", methods=["GET"])
+def venue():
+    res = SQL("SELECT * FROM venue")
+    return jsonify({"data": res})
+
+
+@app.route("/venue/<id>", methods=["GET"])
+def venue_id(id):
+    res = SQL("SELECT * FROM venue WHERE id = " + id)
+    return jsonify({"data": res})
+
+
+@app.route("/venue/add", methods=["POST"])
+def venue_add():
+    res = request.json
+    name = res["name"]
+    address = res["address"]
+    style = res["style"]
+
+    sql_query = (
+        "INSERT INTO venue (id, name, address, style) VALUES ("
+        + id
+        + ", '"
+        + name
+        + "', '"
+        + address
+        + "', '"
+        + style
+        + "')"
+    )
+    res = SQL(sql_query)
+    return jsonify({"data": "res"})
+
+
 @app.route("/venue/edit/<id>", methods=["POST"])
 def venue_edit(id):
     res = request.json
@@ -119,46 +178,9 @@ def venue_edit(id):
     return jsonify({"data": "res"})
 
 
-@app.route("/show/add", methods=["POST"])
-def show_add():
-    res = request.json
-    name = res["name"]
-    date = res["date"]
-    venue = res["venue_id"]
-    seats = res["seats"]
-    details = res["details"]
-    sql_query = (
-        "INSERT INTO show (name, show_date, venue_id, seats, details) VALUES ('"
-        + name
-        + "', '"
-        + date
-        + "', '"
-        + venue
-        + "', '"
-        + seats
-        + "', '"
-        + details
-        + "')"
-    )
-    res = SQL(sql_query)
-    return jsonify({"data": "res"})
-
-
-@app.route("/venue/add", methods=["POST"])
-def venue_add():
-    res = request.json
-    name = res["name"]
-    address = res["address"]
-    style = res["style"]
-    sql_query = (
-        "INSERT INTO venue (name, address, style) VALUES ('"
-        + name
-        + "', '"
-        + address
-        + "', '"
-        + style
-        + "')"
-    )
+@app.route("/venue/delete/<id>", methods=["GET"])
+def venue_delete(id):
+    sql_query = "DELETE FROM venue WHERE id = " + id
     res = SQL(sql_query)
     return jsonify({"data": "res"})
 

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
-from celerySQL import cSQL
+from celerySQL import cSQL, email
 from flask_jwt_extended import (
     create_access_token,
     JWTManager,
@@ -41,13 +41,36 @@ def home():
 @jwt_required()
 def test():
     global access_token
+    user_id = get_jwt_identity()
     return jsonify(
         {
             "access_token": access_token,
+            "user_id": user_id,
             "message": "You have sent it correctly!",
         }
     )
 
+@app.route("/ticket/", methods=["GET"])
+@jwt_required()
+def ticket():
+    global access_token
+    # get jwt identity
+    user_id = get_jwt_identity()
+    res = SQL("SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = "+str(user_id)+") a join venue v on a.venue_id = v.id")
+    return jsonify({"data": res})
+
+@app.route("/ticket/<id>", methods=["GET","POST"])
+@jwt_required()
+def ticket_id(id):
+    global access_token
+    # get jwt identity
+    user_id = get_jwt_identity()
+    tid = SQL("SELECT MAX(id) FROM ticket")[0][0] + 1
+    tid = str(tid)
+    reque = request.json
+    seats = reque["seats"]
+    res = SQL("INSERT INTO ticket VALUES ("+tid+", "+str(id)+", "+str(user_id)+", "+str(seats)+")")
+    return jsonify({"data": res})
 
 @app.route("/show/", methods=["GET"])
 def show():

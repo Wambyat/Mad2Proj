@@ -47,4 +47,33 @@
 --     name TEXT
 -- )
 
-UPDATE show SET seats_booked = 0 WHERE id = 6
+-- UPDATE show SET seats_booked = 0 WHERE id = 6
+
+-- INSERT INTO tag VALUES
+-- (1, 'Jazz'),
+-- (2, 'Theatre'),
+-- (3, 'Movie'),
+-- (4, 'Comedy'),
+-- (5, 'Drama'),
+-- (6, 'Action'),
+-- (7, 'Romance'),
+-- (8, 'Thriller'),
+-- (9, 'Horror'),
+-- (10, 'Sci-Fi')
+
+-- INSERT into show_tags VALUES
+-- (1, 1, 1),
+-- (2, 1, 2),
+-- (3, 2, 2),
+-- (4, 2, 5),
+-- (5, 3, 3),
+-- (6, 3, 4),
+-- (7, 3, 7)
+
+-- INSERT into ticket VALUES
+-- (1, 1, 2, 2),
+-- (2, 1, 2, 1),
+-- (3, 2, 3, 4),
+-- (4, 3, 3, 19)
+
+SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = 3) a join venue v on a.venue_id = v.id

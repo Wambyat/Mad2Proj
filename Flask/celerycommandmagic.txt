@@ -1,1 +1,1 @@
-celery -A celTest worker --loglevel=info -P threads
+celery -A celerySQL worker --loglevel=info -P threads

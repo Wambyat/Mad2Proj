@@ -9,6 +9,7 @@ import VenueEditView from "../views/VenueEditView.vue";
 import ShowEditView from "../views/ShowEditView.vue";
 import VenueNewView from "../views/VenueNewView.vue";
 import ShowNewView from "../views/ShowNewView.vue";
+import TicketView from "../views/TicketView.vue";
 const routes = [
     {
         path: "/",
@@ -63,6 +64,12 @@ const routes = [
         path: "/show/new",
         name: "showNew",
         component: ShowNewView,
+    },
+    {
+        path: "/ticket/:query",
+        name: "ticket",
+        component: TicketView,
+        props: true,
     },
 ];
 

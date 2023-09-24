@@ -15,7 +15,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <router-link to="/model" class="nav-link active"
-                        >Model</router-link
+                        >Profile</router-link
                     >
                 </div>
             </div>

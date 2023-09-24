@@ -5,7 +5,7 @@
         <h3>Please login first.</h3>
         </div>
         <div v-else v-for="ticket in tickets" :key="ticket.id">
-            <p>Ticket ID: {{ ticket[0] }}</p>
+            <p style="text-decoration-line: underline;">Ticket ID: {{ ticket[0] }}</p>
             <p>Seats: {{ ticket[2] }}</p>
             <p>Show: {{ ticket[3] }}</p>
             <p>Venue: {{ ticket[1] }}</p>

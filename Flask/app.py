@@ -50,16 +50,83 @@ def test():
         }
     )
 
+
+@app.route("/user/", methods=["POST", "GET"])
+@jwt_required()
+def user():
+    global access_token
+    # get jwt identity
+    user_id = get_jwt_identity()
+    if request.method == "POST":
+        res = request.json
+        username = res["username"]
+        password = res["password"]
+        fname = res["fname"]
+        lname = res["lname"]
+        age = res["age"]
+        email = res["email"]
+        res = SQL(
+            "UPDATE users SET username = '"
+            + username
+            + "', password = '"
+            + password
+            + "' WHERE id = "
+            + str(user_id)
+        )
+
+        # check if user details exist
+        res = SQL("SELECT * FROM user_details WHERE id = " + str(user_id))
+        if len(res) == 0:
+            res = SQL(
+                "INSERT INTO user_details VALUES ("
+                + str(user_id)
+                + ", '"
+                + fname
+                + "', '"
+                + lname
+                + "', "
+                + str(age)
+                + ", '"
+                + email
+                + "')"
+            )
+        else:
+            res = SQL(
+                "UPDATE user_details SET fname = '"
+                + fname
+                + "', lname = '"
+                + lname
+                + "', age = "
+                + str(age)
+                + ", email = '"
+                + email
+                + "' WHERE id = "
+                + str(user_id)
+            )
+        return jsonify({"data": "res"})
+    else:
+        res = SQL(
+            "SELECT u.id, u.username, u.password, ud.fname, ud.lname, ud.age, ud.email from users u join user_details ud on u.id = ud.id WHERE u.id = "
+            + str(user_id)
+        )
+        return jsonify({"data": res})
+
+
 @app.route("/ticket/", methods=["GET"])
 @jwt_required()
 def ticket():
     global access_token
     # get jwt identity
     user_id = get_jwt_identity()
-    res = SQL("SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = "+str(user_id)+") a join venue v on a.venue_id = v.id")
+    res = SQL(
+        "SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = "
+        + str(user_id)
+        + ") a join venue v on a.venue_id = v.id"
+    )
     return jsonify({"data": res})
 
-@app.route("/ticket/<id>", methods=["GET","POST"])
+
+@app.route("/ticket/<id>", methods=["GET", "POST"])
 @jwt_required()
 def ticket_id(id):
     global access_token
@@ -69,8 +136,19 @@ def ticket_id(id):
     tid = str(tid)
     reque = request.json
     seats = reque["seats"]
-    res = SQL("INSERT INTO ticket VALUES ("+tid+", "+str(id)+", "+str(user_id)+", "+str(seats)+")")
+    res = SQL(
+        "INSERT INTO ticket VALUES ("
+        + tid
+        + ", "
+        + str(id)
+        + ", "
+        + str(user_id)
+        + ", "
+        + str(seats)
+        + ")"
+    )
     return jsonify({"data": res})
+
 
 @app.route("/show/", methods=["GET"])
 def show():
@@ -83,10 +161,15 @@ def show_id(id):
     res = SQL("SELECT * FROM show WHERE id = " + id)
     return jsonify({"data": res})
 
+
 @app.route("/show/tags/<id>", methods=["GET"])
 def show_tags(id):
-    res = SQL("SELECT t.name FROM tag t join show_tags st on t.id = st.tag_id WHERE st.show_id = " + id)
+    res = SQL(
+        "SELECT t.name FROM tag t join show_tags st on t.id = st.tag_id WHERE st.show_id = "
+        + id
+    )
     return jsonify({"data": res})
+
 
 @app.route("/show/edit/<id>", methods=["POST"])
 def show_edit(id):

@@ -5,7 +5,7 @@
             <router-link to="/venue/new">Add new show</router-link>
         </div>
         <div v-for="venue in venues" :key="venue.id">
-            <h3 @click="goVenue(venue[0])" class="title">{{ venue[1] }}</h3>
+            <h3 @click="goVenue(venue[0])" class="title" style="text-decoration-line: underline;">{{ venue[1] }}</h3>
             <p>{{ venue[2] }}</p>
             <p>{{ venue[3] }}</p>
         </div>

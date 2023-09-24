@@ -4,10 +4,26 @@ Flask:
           methods: ["GET", "POST"]
           function: "home"
           logic: "Returns a test message in JSON format"
+        - path: "/alert/"
+          methods: ["GET"]
+          function: "alert"
+          logic: "Sends alerts to all the users who haven't booked a ticket in the past month."
         - path: "/test/"
           methods: ["GET", "POST"]
           function: "test"
           logic: "Checks if you sent access token and returns a success message."
+        - path: "/user/"
+          methods: ["GET"]
+          function: "user"
+          logic: "Edits a user entry in the database, , sends a basic success message as a JSON."
+        - path: "/ticket/"
+          methods: ["GET"]
+          function: "ticket"
+          logic: "Runs SQL query to select all from show, sends data as a JSON."
+        - path: "/ticket/<id>"
+          methods: ["GET"]
+          function: "ticket_id"
+          logic: "Creates a new ticket entry in the database, sends a basic success message as a JSON."
         - path: "/show/"
           methods: ["GET"]
           function: "show"
@@ -16,6 +32,10 @@ Flask:
           methods: ["GET"]
           function: "show_id"
           logic: "Runs SQL query to select show by ID, sends data as a JSON."
+        - path: "/show/tags/<id>"
+          methods: ["GET"]
+          function: "show_tags"
+          logic: "Runs SQL query to select a show's tags by ID, sends data as a JSON."
         - path: "/show/edit/<id>"
           methods: ["POST"]
           function: "show_edit"

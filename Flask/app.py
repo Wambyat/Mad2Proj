@@ -49,9 +49,9 @@ def home():
 @app.route("/alerts/", methods=["GET"])
 def alerts():
     res = SQL(
-        "SELECT email from user_details WHERE id in (SELECT id FROM users WHERE id not in (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')) AND id not in (SELECT id FROM admin))"
+        "SELECT email FROM user_details WHERE id in (SELECT user_id FROM ticket WHERE date_booked < DATE('now','-1 month') AND user_id NOT IN (SELECT id FROM admin) AND user_id NOT IN (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')))"
     )
-    print(res)
+    print("RESULT:ASFDKBJKJKJKJKJKJKJKJKJKJKJKJKJKJKJKJKJKJKJKJJjn\n\n\n\n\n"+str(res))
     for i in res:
         email(
             i[0],

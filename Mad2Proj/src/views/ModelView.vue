@@ -7,9 +7,9 @@
         <p>Age: <input :value="dets[5]" id="age" type="number" /></p>
         <p>Email: <input :value="dets[6]" id="email" /></p>
         <button @click="editUser">Save</button>
-        <button v-if="isAdmin" @click="sendShit">Send alerts to users</button>
-        <h2>Below is your report</h2>
-        <div id="report">
+        <button v-if="isAdmin == 'true'" @click="sendShit">Send alerts to users</button>
+        <h2 v-if="isAdmin != 'true'">Below is your report</h2>
+        <div  v-if="isAdmin != 'true'" id="report">
             <!-- loop thru array report -->
             <div v-for="re in report" :key="re.id">
                 <p>TID: {{ re[0] }}</p>
@@ -18,7 +18,7 @@
                 <p>Seats: {{ re[3] }}</p>
             </div>
         </div>
-        <button @click="saveFile">Save HTML</button>
+        <button @click="saveFile"  v-if="isAdmin != 'true'">Save HTML</button>
     </div>
 </template>
 
@@ -39,7 +39,8 @@
             const isAdmin = ref(false);
             const report = ref([]);
             const sessionStorage = window.sessionStorage;
-            isAdmin.value = sessionStorage.getItem("isAdmin");
+            isAdmin.value = sessionStorage.getItem("admin");
+            console.log(isAdmin.value)
             const router = useRouter();
             const yourConfig = {
                 headers: {
@@ -48,7 +49,7 @@
                 },
             };
             const isLogin = sessionStorage.getItem("isLogin");
-            if (isLogin === "true" && isAdmin !== "true") {
+            if (isLogin === "true") {
                 axios
                     .get("http://localhost:5000/report/", yourConfig)
                     .catch((error) => {

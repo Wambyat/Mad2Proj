@@ -12,10 +12,10 @@
         <div id="report">
             <!-- loop thru array report -->
             <div v-for="re in report" :key="re.id">
-                <p> TID: {{ re[0] }}</p>
-                <p> Show: {{ re[1] }}</p>
-                <p> Date: {{ re[2] }}</p>
-                <p> Seats: {{ re[3] }}</p>
+                <p>TID: {{ re[0] }}</p>
+                <p>Show: {{ re[1] }}</p>
+                <p>Date: {{ re[2] }}</p>
+                <p>Seats: {{ re[3] }}</p>
             </div>
         </div>
         <button @click="saveFile">Save HTML</button>
@@ -47,20 +47,24 @@
                         "Bearer " + sessionStorage.getItem("accessToken"),
                 },
             };
-            axios
-            .get("http://localhost:5000/report/", yourConfig)
-            .catch((error) => {
-                console.log(error);
-            })
-            .then((response) => {
-                const res = response.data;
-                console.log(res);
-                if (res["data"].length === 0) {
-                    report.value = [];
-                } else {
-                    report.value = res["data"];
-                }
-            });
+            const isLogin = sessionStorage.getItem("isLogin");
+            if (isLogin === "true") {
+                axios
+                    .get("http://localhost:5000/report/", yourConfig)
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                    .then((response) => {
+                        const res = response.data;
+                        console.log(res);
+                        if (res["data"].length === 0) {
+                            report.value = [];
+                        } else {
+                            report.value = res["data"];
+                        }
+                    });
+            }
+
             if (sessionStorage.getItem("accessToken") !== "") {
                 axios
                     .get("http://localhost:5000/user/", yourConfig)

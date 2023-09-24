@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>This is venue</h1>
+        <SearchBar searchData="venue" />
         <div v-if="isAdmin === 'true'">
             <router-link to="/venue/new">Add new show</router-link>
         </div>
@@ -15,6 +16,7 @@
     import axios from "axios";
     import { ref } from "vue";
     import { useRouter } from "vue-router";
+    import SearchBar from "./SearchBar.vue";
     export default {
         data() {
             return {
@@ -40,6 +42,7 @@
             }
             return { venues, goVenue, isAdmin };
         },
+        components: { SearchBar }
     };
 </script>
 

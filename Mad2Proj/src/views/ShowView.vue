@@ -8,6 +8,13 @@
         <p>{{ dets[4] }}</p>
         <p>{{ dets[5] }}</p>
         <p>{{ dets[6] }}</p>
+        <div>
+            <p>Tags:</p>
+            <div v-for="tag in tags" :key="tag[0]">
+                <ul>{{ tag[0] }}</ul>
+            </div>
+        </div>
+
         <div v-if="isAdmin === 'true'">
             <p @click="goShowEdit(dets[0])" class="clickable">
                 Click me to edit or delete
@@ -28,6 +35,7 @@
                 dets: [],
                 isLogin: "false",
                 isAdmin: "false",
+                tags: [],
             };
         },
         props: {
@@ -38,6 +46,7 @@
             const dets = ref([]);
             const isLogin = ref("false");
             const isAdmin = ref("false");
+            const tags = ref([]);
             const sessionStorage = window.sessionStorage;
             isLogin.value = sessionStorage.getItem("isLogin");
             isAdmin.value = sessionStorage.getItem("admin");
@@ -47,6 +56,10 @@
                 .then((responce) => {
                     const res = responce.data;
                     dets.value = res["data"][0];
+                    axios.get("http://localhost:5000/show/tags/" + query.value).then((responce) => {
+                        const res = responce.data;
+                        tags.value = res["data"];
+                    });
                 });
             function goShowEdit(query) {
                 router.push("/show/edit/" + query);
@@ -54,7 +67,7 @@
             function goTicket(query) {
                 router.push("/ticket/" + query);
             }
-            return { dets, goShowEdit, isLogin, isAdmin, goTicket };
+            return { dets, goShowEdit, isLogin, isAdmin, goTicket, tags };
         },
     };
 </script>

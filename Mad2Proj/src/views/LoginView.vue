@@ -68,7 +68,7 @@
                     .post("http://localhost:5000/login", params)
                     .then((responce) => {
                         const res = responce.data;
-                        console.log(res);
+                        // console.log(res);
                         if (res["error"]) {
                             document.getElementById("error").innerHTML =
                                 res["error"];

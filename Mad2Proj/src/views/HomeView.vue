@@ -37,11 +37,11 @@
             const isLogin = ref("");
             const testTabs = ref(null);
             function ran() {
-                console.log("ran");
+                // console.log("ran");
                 if (isLogin.value === "false") {
                     // document.getElementById("ticket").style.display = "none";
                 } else {
-                    console.log("ran2");
+                    // console.log("ran2");
                 }
             }
             const sessionStorage = window.sessionStorage;

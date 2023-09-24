@@ -1,0 +1,85 @@
+Flask:
+    routes:
+        - path: "/"
+          methods: ["GET", "POST"]
+          function: "home"
+          logic: "Returns a test message in JSON format"
+        - path: "/test/"
+          methods: ["GET", "POST"]
+          function: "test"
+          logic: "Checks if you sent access token and returns a success message."
+        - path: "/show/"
+          methods: ["GET"]
+          function: "show"
+          logic: "Runs SQL query to select all from show, sends data as a JSON."
+        - path: "/show/<id>"
+          methods: ["GET"]
+          function: "show_id"
+          logic: "Runs SQL query to select show by ID, sends data as a JSON."
+        - path: "/show/edit/<id>"
+          methods: ["POST"]
+          function: "show_edit"
+          logic: "Edits a show entry in the database, , sends a basic success message as a JSON."
+          inputs:
+              - name
+              - date
+              - venue_id
+              - seats
+              - details
+        - path: "/show/add"
+          methods: ["POST"]
+          function: "show_add"
+          logic: "Adds a new show entry in the database, , sends a basic success message as a JSON."
+          inputs:
+              - name
+              - date
+              - venue_id
+              - seats
+              - details
+        - path: "/show/delete/<id>"
+          methods: ["GET"]
+          function: "show_delete"
+          logic: "Deletes a show entry in the database by ID, , sends a basic success message as a JSON."
+        - path: "/venue/"
+          methods: ["GET"]
+          function: "venue"
+          logic: "Runs SQL query to select all from venue, sends data as a JSON."
+        - path: "/venue/<id>"
+          methods: ["GET"]
+          function: "venue_id"
+          logic: "Runs SQL query to select venue by ID, sends data as a JSON."
+        - path: "/venue/add"
+          methods: ["POST"]
+          function: "venue_add"
+          logic: "Adds a new venue in the database, , sends a basic success message as a JSON."
+          inputs:
+              - name
+              - address
+              - style
+        - path: "/venue/edit/<id>"
+          methods: ["POST"]
+          function: "venue_edit"
+          logic: "Edits a venue entry in the database, , sends a basic success message as a JSON."
+          inputs:
+              - name
+              - address
+              - style
+        - path: "/venue/delete/<id>"
+          methods: ["GET"]
+          function: "venue_delete"
+          logic: "Deletes a venue entry in the database by ID, , sends a basic success message as a JSON."
+        - path: "/login"
+          methods: ["POST"]
+          function: "login"
+          logic: "Logs in a user and returns an access token in JSON format"
+          inputs:
+              - username
+              - password
+        - path: "/logout"
+          methods: ["GET"]
+          function: "reset"
+          logic: "Resets the access token, , sends a basic success message as a JSON."
+        - path: "/model/"
+          methods: ["POST", "GET"]
+          function: "model"
+          logic: "Returns a success message in JSON format"

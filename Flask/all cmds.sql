@@ -68,16 +68,22 @@
 -- (4, 3, 3, 19)
 -- SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = 3) a join venue v on a.venue_id = v.id
 -- SELECT t.name FROM tag t join show_tags st on t.id = st.tag_id WHERE st.show_id = 3
-SELECT
-    u.id,
-    u.username,
-    u.password,
-    ud.fname,
-    ud.lname,
-    ud.age,
-    ud.email
-FROM
-    users u
-    JOIN user_details ud ON u.id = ud.id
-WHERE
-    u.id = 1
+-- SELECT
+--     u.id,
+--     u.username,
+--     u.password,
+--     ud.fname,
+--     ud.lname,
+--     ud.age,
+--     ud.email
+-- FROM
+--     users u
+--     JOIN user_details ud ON u.id = ud.id
+-- WHERE
+--     u.id = 1
+
+
+
+-- SELECT id, show_date FROM show WHERE venue_id = 1
+
+SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = 1

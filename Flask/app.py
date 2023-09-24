@@ -294,6 +294,12 @@ def venue_delete(id):
     res = SQL(sql_query)
     return jsonify({"data": "res"})
 
+@app.route("/venue/export/<id>", methods=["GET"])
+def venue_export(id):
+    res = SQL("SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = " + id)
+    res2 = SQL("SELECT id, show_date FROM show WHERE venue_id = " + id)
+    return jsonify({"tickets": res, "shows": res2})
+
 
 @app.route("/login", methods=["POST"])
 def login():

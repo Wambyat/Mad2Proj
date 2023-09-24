@@ -5,7 +5,7 @@
             <router-link to="/show/new">Add new show</router-link>
         </div>
         <div v-for="show in shows" :key="show.id">
-            <h3 @click="goShow(show[0])" class="title">{{ show[1] }}</h3>
+            <h3 @click="goShow(show[0])" class="title" style="text-decoration-line: underline;">{{ show[1] }}</h3>
             <p>{{ show[6] }}</p>
             <p>{{ show[2] }}</p>
         </div>

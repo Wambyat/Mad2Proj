@@ -48,7 +48,7 @@
                 },
             };
             const isLogin = sessionStorage.getItem("isLogin");
-            if (isLogin === "true") {
+            if (isLogin === "true" && isAdmin === "false") {
                 axios
                     .get("http://localhost:5000/report/", yourConfig)
                     .catch((error) => {

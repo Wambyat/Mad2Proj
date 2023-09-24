@@ -11,6 +11,7 @@
             <p>Venue: {{ ticket[1] }}</p>
             <p>Date: {{ ticket[4] }}</p>
             <p>Details: {{ ticket[5] }}</p>
+            <p>Date Booked: {{ ticket[6] }}</p>
         </div>
     </div>
 </template>
@@ -45,7 +46,7 @@
                 axios
                     .get("http://localhost:5000/ticket/", yourConfig)
                     .catch((error) => {
-                        console.log(error);
+                        // console.log(error);
                     })
                     .then((response) => {
                         const res = response.data;
@@ -53,7 +54,7 @@
                     });
             }
             function goTicket(query) {
-                console.log("sad");
+                // console.log("sad");
             }
             return { tickets, goTicket, isAdmin, isLogin };
         },

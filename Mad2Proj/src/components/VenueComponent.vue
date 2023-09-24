@@ -31,7 +31,7 @@
             const router = useRouter();
             const sessionStorage = window.sessionStorage;
             isAdmin.value = sessionStorage.getItem("admin");
-            console.log("isAdmin: "+isAdmin.value);
+            // console.log("isAdmin: "+isAdmin.value);
             axios.get("http://localhost:5000/venue").then((responce) => {
                 const res = responce.data;
                 venues.value = res["data"];

@@ -15,7 +15,8 @@ def cSQL(query):
     conn.close()
     return output
 
-def email(toEmail,subject,body):
+@app.task
+def cemail(toEmail,subject,body):
     password = "pgks lufx otqe obru"
     email_sender = "anirudhaaanekal@gmail.com"
     email_password = password

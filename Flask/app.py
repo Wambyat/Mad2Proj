@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
-from celerySQL import cSQL, email
+from celerySQL import cSQL, cemail
 from flask_jwt_extended import (
     create_access_token,
     JWTManager,
@@ -31,10 +31,34 @@ def SQL(query):
             time.sleep(0.5)
 
 
+def email(query, sub, bod):
+    output = cemail.delay(query, sub, bod)
+    while True:
+        if output.status == "SUCCESS":
+            return output.get()
+        else:
+            time.sleep(0.5)
+
+
 # This is just a testing route. Use this to run sanity tests and whatever else.
 @app.route("/", methods=["GET", "POST"])
 def home():
     return jsonify({"message": "This is a test message. From Flask."})
+
+
+@app.route("/alerts/", methods=["GET"])
+def alerts():
+    res = SQL(
+        "SELECT email from user_details WHERE id in (SELECT id FROM users WHERE id not in (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')) AND id not in (SELECT id FROM admin))"
+    )
+    print(res)
+    for i in res:
+        email(
+            i[0],
+            "Alert",
+            "You have not booked a ticket in the last month. Please book a ticket soon.",
+        )
+    return jsonify({"data": "res"})
 
 
 @app.route("/test/", methods=["GET", "POST"])
@@ -119,7 +143,7 @@ def ticket():
     # get jwt identity
     user_id = get_jwt_identity()
     res = SQL(
-        "SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = "
+        "SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details, a.date_booked FROM (SELECT t.id, t.seats, t.date_booked, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = "
         + str(user_id)
         + ") a join venue v on a.venue_id = v.id"
     )
@@ -145,7 +169,21 @@ def ticket_id(id):
         + str(user_id)
         + ", "
         + str(seats)
-        + ")"
+        + ", DATE('now'))"
+    )
+    # update seats booked and seats left in show
+    res = SQL("SELECT seats_booked, seats FROM show WHERE id = " + str(id))
+    seats_booked = res[0][0]
+    seats_left = res[0][1]
+    seats_booked += int(seats)
+    seats_left -= int(seats)
+    res = SQL(
+        "UPDATE show SET seats_booked = "
+        + str(seats_booked)
+        + ", seats = "
+        + str(seats_left)
+        + " WHERE id = "
+        + str(id)
     )
     return jsonify({"data": res})
 
@@ -294,9 +332,13 @@ def venue_delete(id):
     res = SQL(sql_query)
     return jsonify({"data": "res"})
 
+
 @app.route("/venue/export/<id>", methods=["GET"])
 def venue_export(id):
-    res = SQL("SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = " + id)
+    res = SQL(
+        "SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = "
+        + id
+    )
     res2 = SQL("SELECT id, show_date FROM show WHERE venue_id = " + id)
     return jsonify({"tickets": res, "shows": res2})
 
@@ -307,7 +349,20 @@ def login():
     username = request.json.get("username")
     password = request.json.get("password")
     res = SQL("SELECT * FROM users")
-    print(res)
+    # print(res)
+    us = [i[1] for i in res]
+    if username not in us:
+        id = SQL("SELECT MAX(id) FROM users")[0][0] + 1
+        id = str(id)
+        res = SQL("INSERT INTO users VALUES (" + id + ", '" + username + "', '" + password + "')")
+        access_token = create_access_token(identity=id)
+        return jsonify(
+            {
+                "access_token": access_token,
+                "message": "You are logged in now",
+                "admin": False,
+            }
+        )
     for i in res:
         if i[1] == username and i[2] == password:
             access_token = create_access_token(identity=i[0])

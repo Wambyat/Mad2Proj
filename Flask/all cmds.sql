@@ -86,4 +86,13 @@
 
 -- SELECT id, show_date FROM show WHERE venue_id = 1
 
-SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = 1
+-- SELECT t.id, t.seats FROM ticket t join (SELECT venue_id, id FROM show) vs WHERE t.show_id = vs.id AND vs.venue_id = 1
+
+-- ALTER table ticket ADD COLUMN date_booked DATE NOT NULL DEFAULT '2021-01-01'
+
+
+
+
+-- UPDATE ticket SET date_booked = '2023-09-01' WHERE id = 1
+
+SELECT email from user_details WHERE id in (SELECT id FROM users WHERE id not in (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')) AND id not in (SELECT id FROM admin))

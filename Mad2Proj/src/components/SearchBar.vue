@@ -107,11 +107,11 @@
                     if (input.length < 3) {
                         return { error: "Please enter more than 2 characters" };
                     }
-                    console.log("searchData.value: " + searchData.value)
+                    // console.log("searchData.value: " + searchData.value)
                     if (searchData.value === "venue") {
                         for (const key in jsonData["data"]) {
                             var row = jsonData["data"][key];
-                            console.log("venue: "+row);
+                            // console.log("venue: "+row);
                             if (
                                 row[1]
                                     .toLowerCase()

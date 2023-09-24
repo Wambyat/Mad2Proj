@@ -60,6 +60,15 @@ def alerts():
         )
     return jsonify({"data": "res"})
 
+@app.route("/report/", methods=["GET"])
+@jwt_required()
+def report():
+    id = get_jwt_identity()
+    res = SQL("SELECT t.id, s.name, s.show_date, s.seats_booked FROM ticket t join show s WHERE date_booked > DATE('now','-1 month') AND t.show_id = s.id AND user_id = "+str(id))
+    if len(res) == 0:
+        return jsonify({"data": "No tickets booked"})
+    else:
+        return jsonify({"data": res})
 
 @app.route("/test/", methods=["GET", "POST"])
 @jwt_required()

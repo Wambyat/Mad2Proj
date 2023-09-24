@@ -95,4 +95,6 @@
 
 -- UPDATE ticket SET date_booked = '2023-09-01' WHERE id = 1
 
-SELECT email from user_details WHERE id in (SELECT id FROM users WHERE id not in (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')) AND id not in (SELECT id FROM admin))
+-- SELECT email from user_details WHERE id in (SELECT id FROM users WHERE id not in (SELECT user_id FROM ticket WHERE date_booked > DATE('now','-1 month')) AND id not in (SELECT id FROM admin))
+
+SELECT t.id, s.name, s.show_date, s.seats_booked FROM ticket t join show s WHERE date_booked > DATE('now','-1 month') AND t.show_id = s.id AND user_id = 3

@@ -7,7 +7,18 @@
         <p>Age: <input :value="dets[5]" id="age" type="number" /></p>
         <p>Email: <input :value="dets[6]" id="email" /></p>
         <button @click="editUser">Save</button>
-        <button @click="sendShit">Send alerts to users</button>
+        <button v-if="isAdmin" @click="sendShit">Send alerts to users</button>
+        <h2>Below is your report</h2>
+        <div id="report">
+            <!-- loop thru array report -->
+            <div v-for="re in report" :key="re.id">
+                <p> TID: {{ re[0] }}</p>
+                <p> Show: {{ re[1] }}</p>
+                <p> Date: {{ re[2] }}</p>
+                <p> Seats: {{ re[3] }}</p>
+            </div>
+        </div>
+        <button @click="saveFile">Save HTML</button>
     </div>
 </template>
 
@@ -19,11 +30,16 @@
         data() {
             return {
                 dets: [],
+                report: [],
+                isAdmin: false,
             };
         },
         setup() {
             const dets = ref([]);
+            const isAdmin = ref(false);
+            const report = ref([]);
             const sessionStorage = window.sessionStorage;
+            isAdmin.value = sessionStorage.getItem("isAdmin");
             const router = useRouter();
             const yourConfig = {
                 headers: {
@@ -31,6 +47,20 @@
                         "Bearer " + sessionStorage.getItem("accessToken"),
                 },
             };
+            axios
+            .get("http://localhost:5000/report/", yourConfig)
+            .catch((error) => {
+                console.log(error);
+            })
+            .then((response) => {
+                const res = response.data;
+                console.log(res);
+                if (res["data"].length === 0) {
+                    report.value = [];
+                } else {
+                    report.value = res["data"];
+                }
+            });
             if (sessionStorage.getItem("accessToken") !== "") {
                 axios
                     .get("http://localhost:5000/user/", yourConfig)
@@ -77,14 +107,20 @@
                 );
             }
             function sendShit() {
-                axios
-                    .get("http://localhost:5000/alerts/")
-                    .then((responce)=>{
-                        console.log(responce.data);
-                        alert("Alerts sent")
-                    });
+                axios.get("http://localhost:5000/alerts/").then((responce) => {
+                    console.log(responce.data);
+                    alert("Alerts sent");
+                });
             }
-            return { dets, editUser, sendShit };
+            function saveFile() {
+                const html = document.getElementById("report").innerHTML;
+                const blob = new Blob([html], { type: "text/html" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "output.html";
+                link.click();
+            }
+            return { dets, editUser, sendShit, isAdmin, saveFile, report };
         },
     };
 </script>

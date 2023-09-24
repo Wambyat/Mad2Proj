@@ -76,4 +76,6 @@
 -- (3, 2, 3, 4),
 -- (4, 3, 3, 19)
 
-SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = 3) a join venue v on a.venue_id = v.id
+-- SELECT a.id, v.name, a.seats, a.name, a.show_date, a.details FROM (SELECT t.id, t.seats, s.name, s.show_date, s.venue_id, s.details FROM ticket t join show s on t.show_id = s.id WHERE t.user_id = 3) a join venue v on a.venue_id = v.id
+
+SELECT t.name FROM tag t join show_tags st on t.id = st.tag_id WHERE st.show_id = 3

@@ -83,6 +83,10 @@ def show_id(id):
     res = SQL("SELECT * FROM show WHERE id = " + id)
     return jsonify({"data": res})
 
+@app.route("/show/tags/<id>", methods=["GET"])
+def show_tags(id):
+    res = SQL("SELECT t.name FROM tag t join show_tags st on t.id = st.tag_id WHERE st.show_id = " + id)
+    return jsonify({"data": res})
 
 @app.route("/show/edit/<id>", methods=["POST"])
 def show_edit(id):
